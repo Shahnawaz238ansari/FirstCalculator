@@ -2,26 +2,31 @@ let input = document.getElementById('inputBox');
 let buttons = document.querySelectorAll('button');
 
 let string = "";
-let arr = Array.from(buttons);
-arr.forEach(button => {
-    button.addEventListener('click', (e) =>{
-        if(e.target.innerHTML == '='){
-            string = eval(string);
-            input.value = string;
-        }
+buttons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        let btnValue = e.target.innerHTML;
 
-        else if(e.target.innerHTML == 'AC'){
+        if (btnValue === '=') {
+            try {
+                // safely evaluate only numbers/operators
+                string = eval(string.replace(/[^-()\d/*+.]/g, ''));
+                input.value = string;
+            } catch {
+                input.value = "Error";
+                string = "";
+            }
+        } 
+        else if (btnValue === 'AC') {
             string = "";
+            input.value = "0";
+        } 
+        else if (btnValue === 'DEL') {
+            string = string.slice(0, -1);
+            input.value = string || "0";
+        } 
+        else {
+            string += btnValue;
             input.value = string;
         }
-        else if(e.target.innerHTML == 'DEL'){
-            string = string.substring(0, string.length-1);
-            input.value = string;
-        }
-        else{
-            string += e.target.innerHTML;
-            input.value = string;
-        }
-        
-    })
-})
+    });
+});
